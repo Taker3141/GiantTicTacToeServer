@@ -3,16 +3,16 @@ package computercamp.giantTicTacToe;
 import java.io.*;
 import java.net.Socket;
 
-public class ServerThread extends Thread
+public class ClientInterface
 {
-	public final int threadID = threadCounter++;
+	public final int clientID = clientCounter++;
 	private final Socket socket;
 	private BufferedReader in;
 	private PrintWriter out;
 	
-	public static int threadCounter = 0;
+	public static int clientCounter = 0;
 	
-	public ServerThread(Socket clientSocket)
+	public ClientInterface(Socket clientSocket)
 	{
 		socket = clientSocket;
 		try
@@ -27,26 +27,29 @@ public class ServerThread extends Thread
 		}
 	}
 
-	@Override
-	public void run()
+	public byte[] getMessage()
 	{
+		char[] buffer = new char[1204];
 		try
 		{
-			String inputLine = null;
-			while((inputLine = in.readLine()) != null)
-			{
-				out.println(inputLine);
-			}
+			in.read(buffer);
 		} 
 		catch (Exception e)
 		{
-			println("Thread crashed :(");
+			println("Failed to read message :(");
 			e.printStackTrace();
 		}
+		return new String(buffer).getBytes();
+	}
+	
+	public void sendMessage(byte[] message)
+	{
+		out.print(new String(message));
+		out.flush();
 	}
 	
 	private void println(String message)
 	{
-		System.out.println("Thread " + threadID + ": " + message);
+		System.out.println("Thread " + clientID + ": " + message);
 	}
 }

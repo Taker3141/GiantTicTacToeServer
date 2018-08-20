@@ -9,7 +9,7 @@ import computercamp.giantTicTacToe.PlayingField.State;
 
 public class Main
 {
-	private static ServerThread[] threads = new ServerThread[2];
+	private static ClientInterface[] clients = new ClientInterface[2];
 	
 	public static final int PORT = 3141;
 	
@@ -21,14 +21,22 @@ public class Main
 		{
 			serverSocket = new ServerSocket(PORT);
 			System.out.println("Server Running");
-			while(threads[0] == null || threads[1] == null)
+			Socket clientSocket = serverSocket.accept();
+			clients[0] = new ClientInterface(clientSocket);
+			System.out.println("Client 0 accepted");
+			clientSocket = serverSocket.accept();
+			clients[1] = new ClientInterface(clientSocket);
+			System.out.println("Client 1 accepted");
+			byte[] message;
+			while(true)
 			{
-				Socket clientSocket = serverSocket.accept();
-				ServerThread thread = new ServerThread(clientSocket);
-				threads[ServerThread.threadCounter - 1] = thread;
-				thread.start();
+				message = clients[0].getMessage();
+				clients[0].sendMessage(message);
+				System.out.println(new String(message));
+				message = clients[1].getMessage();
+				clients[1].sendMessage(message);
+				System.out.println(new String(message));
 			}
-			while(true) Thread.sleep(1000);
 		} 
 		catch (Exception e)
 		{
