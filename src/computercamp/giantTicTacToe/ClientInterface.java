@@ -4,9 +4,12 @@ import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 
+import computercamp.giantTicTacToe.PlayingBoard.CellState;
+
 public class ClientInterface
 {
 	public final int clientID = clientCounter++;
+	public final CellState symbol;
 	private final Socket socket;
 	private BufferedReader in;
 	private PrintWriter out;
@@ -26,6 +29,8 @@ public class ClientInterface
 		{
 			e.printStackTrace();
 		}
+		if(clientID == 0) symbol = CellState.X;
+		else symbol = CellState.O;
 	}
 
 	public byte[] getMessage() throws SocketException, IOException
