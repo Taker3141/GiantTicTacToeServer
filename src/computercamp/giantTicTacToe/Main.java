@@ -27,19 +27,21 @@ public class Main
 			clientSocket = serverSocket.accept();
 			clients[1] = new ClientInterface(clientSocket);
 			System.out.println("Client 1 accepted");
-			byte[] message;
+			byte[] testMessage = "Test message".getBytes();
+			byte[] buffer;
 			while(true)
 			{
-				message = clients[0].getMessage();
-				clients[0].sendMessage(message);
-				System.out.println(new String(message));
-				message = clients[1].getMessage();
-				clients[1].sendMessage(message);
-				System.out.println(new String(message));
+				clients[0].sendMessage(testMessage);
+				buffer = clients[0].getMessage();
+				System.out.println(new String(buffer));
+				clients[1].sendMessage(testMessage);
+				buffer = clients[1].getMessage();
+				System.out.println(new String(buffer));
 			}
 		} 
 		catch (Exception e)
 		{
+			System.out.println("Server Crashed");
 			e.printStackTrace();
 		}
 		finally {try{serverSocket.close();} catch(Exception e) {};}

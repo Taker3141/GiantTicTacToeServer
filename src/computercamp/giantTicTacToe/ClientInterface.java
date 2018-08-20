@@ -2,6 +2,7 @@ package computercamp.giantTicTacToe;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class ClientInterface
 {
@@ -27,18 +28,10 @@ public class ClientInterface
 		}
 	}
 
-	public byte[] getMessage()
+	public byte[] getMessage() throws SocketException, IOException
 	{
 		char[] buffer = new char[1204];
-		try
-		{
-			in.read(buffer);
-		} 
-		catch (Exception e)
-		{
-			println("Failed to read message :(");
-			e.printStackTrace();
-		}
+		in.read(buffer);
 		return new String(buffer).getBytes();
 	}
 	
