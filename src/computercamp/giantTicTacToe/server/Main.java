@@ -1,11 +1,11 @@
-package computercamp.giantTicTacToe;
+package computercamp.giantTicTacToe.server;
 
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Random;
 
-import computercamp.giantTicTacToe.PlayingBoard.CellState;
+import computercamp.giantTicTacToe.server.PlayingBoard.CellState;
 
 public class Main
 {

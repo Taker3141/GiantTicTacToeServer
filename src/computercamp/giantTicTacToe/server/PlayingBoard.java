@@ -1,4 +1,4 @@
-package computercamp.giantTicTacToe;
+package computercamp.giantTicTacToe.server;
 
 public class PlayingBoard
 {

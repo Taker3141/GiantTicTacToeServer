@@ -1,10 +1,10 @@
-package computercamp.giantTicTacToe;
+package computercamp.giantTicTacToe.server;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 
-import computercamp.giantTicTacToe.PlayingBoard.CellState;
+import computercamp.giantTicTacToe.server.PlayingBoard.CellState;
 
 public class ClientInterface
 {
