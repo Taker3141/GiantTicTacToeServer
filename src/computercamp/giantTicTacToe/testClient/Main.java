@@ -4,22 +4,40 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 
+import javax.swing.JFrame;
+
 import computercamp.giantTicTacToe.server.PlayingBoard.CellState;
 
 public class Main
 {
 	public static ServerInterface server;
-	private static CellState[][] board = new CellState[9][9];
-	private static CellState[][] bigBoard = new CellState[3][3];
+	public static CellState[][] board = new CellState[9][9];
+	public static CellState[][] bigBoard = new CellState[3][3];
+	public static boolean myTurn = false;
+	public static int activeX = 3, activeY = 3;
+	public static CellState symbol = null;
+	
+	public static JFrame frame;
 	
 	public static final int PORT = 3141;
 	
 	public static void main(String[] args)
 	{
+		System.out.println("Testing Client running");
+		
+		frame = new JFrame();
+		frame.setSize(900, 900);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		frame.add(new GamePanel());
+		
+		frame.setVisible(true);
+			
 		try
 		{
-			System.out.println("Testing Client running");
 			server = new ServerInterface(new Socket(InetAddress.getLocalHost(), PORT));
+			
+			while(true) server.waitForMessage();
 		}
 		catch(SocketException e1)
 		{

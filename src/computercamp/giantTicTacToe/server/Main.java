@@ -11,13 +11,12 @@ public class Main
 {
 	private static ClientInterface[] clients = new ClientInterface[2];
 	
-	public static PlayingBoard board;
+	public static PlayingBoard board = new PlayingBoard();
 	
 	public static final int PORT = 3141;
 	
 	public static void main(String[] args)
 	{
-		board = generateRandomTestingField();
 		ServerSocket serverSocket = null;
 		try
 		{
@@ -31,8 +30,8 @@ public class Main
 			System.out.println("Client 1 accepted");
 			while(true)
 			{
-				moveRoutine(clients[0]);
-				moveRoutine(clients[1]);
+				while(!moveRoutine(clients[0]));
+				while(!moveRoutine(clients[1]));
 			}
 		} 
 		catch (Exception e)
@@ -43,16 +42,19 @@ public class Main
 		finally {try{serverSocket.close();} catch(Exception e) {};}
 	}
 	
-	private static void moveRoutine(ClientInterface client) throws SocketException
+	private static boolean moveRoutine(ClientInterface client) throws SocketException
 	{
+		boolean ret = false;
 		try
 		{
 			byte[] message;
 			byte[] buffer;
+			System.out.println("It's Client " + client.clientID + "'s turn");
 			message = client.composeInfoMessage(board);
 			client.sendMessage(message);
 			buffer = client.getMessage();
-			client.interpretMoveMessage(buffer, board);
+			ret = client.interpretMoveMessage(buffer, board);
+			System.out.println("Client " + client.clientID + " made a move");
 		}
 		catch(SocketException e)
 		{
@@ -64,6 +66,7 @@ public class Main
 			System.out.println("An Exception occurred O_o");
 			e.printStackTrace();
 		}
+		return ret;
 	}
 	
 	private static PlayingBoard generateRandomTestingField()

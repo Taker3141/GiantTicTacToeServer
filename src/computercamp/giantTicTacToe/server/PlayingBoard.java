@@ -6,17 +6,20 @@ public class PlayingBoard
 	private CellState[][] bigBoard = new CellState[3][3];
 	int activeX = 3, activeY = 3;
 	
-	public void setCell(int x, int y, CellState s)
+	public boolean setCell(int x, int y, CellState s)
 	{
 		if(checkCoordinates(x, y))
 		{
 			board[x][y] = s;
 			calculateBigBoardState();
 			calculateNextActiveField(x, y);
+			return true;
 		}
 		else
 		{
 			//TODO error handling
+			System.out.println("Invalid move");
+			return false;
 		}
 	}
 	
@@ -92,7 +95,7 @@ public class PlayingBoard
 	
 	private void calculateNextActiveField(int lastX, int lastY)
 	{
-		int x = lastX / 3, y = lastY / 3;
+		int x = lastX % 3, y = lastY % 3;
 		if(bigBoard[x][y] != null) activeX = activeY = 3;
 		else
 		{

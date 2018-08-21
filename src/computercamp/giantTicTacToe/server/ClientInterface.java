@@ -65,17 +65,17 @@ public class ClientInterface
 		return message;
 	}
 	
-	public void interpretMoveMessage(byte[] message, PlayingBoard board)
+	public boolean interpretMoveMessage(byte[] message, PlayingBoard board)
 	{
 		int i = 0;
 		if(message[i++] != 'M') 
 		{
 			System.out.println("This is not a move message!");
-			return;
+			return false;
 		}
 		i++;
 		int x = message[i++], y = message[i++];
-		board.setCell(x, y, symbol);
+		return board.setCell(x, y, symbol);
 	}
 	
 	public static byte[] composeWinMessage(ClientInterface winner)
