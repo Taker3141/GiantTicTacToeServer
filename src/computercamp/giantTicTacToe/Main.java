@@ -13,7 +13,6 @@ public class Main
 	public static PlayingBoard board;
 	
 	public static final int PORT = 3141;
-	public static final byte SEPARATOR = -1;
 	
 	public static void main(String[] args)
 	{
@@ -33,15 +32,15 @@ public class Main
 			byte[] buffer;
 			while(true)
 			{
-				message = composeInfoMessage(clients[0]);
+				message = ClientInterface.composeInfoMessage(board, clients[0]);
 				clients[0].sendMessage(message);
 				buffer = clients[0].getMessage();
-				interpretMoveMessage(buffer, clients[0]);
+				ClientInterface.interpretMoveMessage(buffer, board, clients[0]);
 				
-				message = composeInfoMessage(clients[1]);
+				message = ClientInterface.composeInfoMessage(board, clients[1]);
 				clients[1].sendMessage(message);
 				buffer = clients[1].getMessage();
-				interpretMoveMessage(buffer, clients[1]);
+				ClientInterface.interpretMoveMessage(buffer, board, clients[1]);
 			}
 		} 
 		catch (Exception e)
@@ -50,48 +49,6 @@ public class Main
 			e.printStackTrace();
 		}
 		finally {try{serverSocket.close();} catch(Exception e) {};}
-	}
-	
-	private static byte[] composeInfoMessage(ClientInterface client)
-	{
-		byte[] message = new byte[99];
-		int i = 0;
-		message[i++] = 'I'; message[i++] = SEPARATOR;
-		message[i++] = (byte)client.clientID; message[i++] = SEPARATOR;
-		
-		message = copyBytesToLocation(message, board.getBigBoardState(), i); i += 9; message[i++] = SEPARATOR;
-		message = copyBytesToLocation(message, board.getBoardState(), i); i += 81; message[i++] = SEPARATOR;
-		message[i++] = (byte)board.activeX; message[i++] = (byte)board.activeY; message[i++] = SEPARATOR;
-		return message;
-	}
-	
-	private static void interpretMoveMessage(byte[] message, ClientInterface client)
-	{
-		int i = 0;
-		if(message[i++] != 'M') 
-		{
-			System.out.println("This is not a move message!");
-			return;
-		}
-		i++;
-		int x = message[i++], y = message[i++];
-		board.setCell(x, y, client.symbol);
-	}
-	
-	private static byte[] composeWinMessage(ClientInterface winner)
-	{
-		byte[] message = new byte[4];
-		int i = 0;
-		message[i++] = 'W'; message[i++] = SEPARATOR;
-		message[i++] = (byte)winner.clientID; message[i++] = SEPARATOR;
-		return message;
-	}
-	
-	private static byte[] copyBytesToLocation(byte[] dest, byte[] src, int loc)
-	{
-		byte[] ret = dest;
-		for(int i = 0; i < src.length; i++) ret[loc + i] = src[i];
-		return ret;
 	}
 	
 	private static PlayingBoard generateRandomTestingField()
