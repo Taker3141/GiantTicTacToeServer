@@ -22,18 +22,49 @@ public class PlayingBoard
 	
 	private void calculateBigBoardState()
 	{
-		for(int startX = 0; startX < 9; startX += 3)
+		for(int startX = 0; startX < 9; startX += 3) for(int startY = 0; startY < 9; startY += 3)
 		{
-			for(int startY = 0; startY < 9; startY += 3)
+			boolean boardFull = true;
+			//Check rows and columns
+			for(int j = 0; j < 3; j++)
 			{
-				//TODO calculate if a Field is won
+				boolean rowFull = true;
+				boolean columnFull = true;
+				CellState symbolRow = board[startX][startY + j], symbolColumn = board[startX + j][startY];
+				for(int i = 0; i < 3; i++) 
+				{
+					rowFull &= board[startX + i][startY + j] == symbolRow;
+					columnFull &= board[startX + j][startY + i] == symbolColumn;
+					boardFull &= board[startX + i][startY + j] != null;
+				}
+				if(rowFull && symbolRow != null) bigBoard[startX / 3][startY / 3] = symbolRow;
+				if(columnFull && symbolColumn != null) bigBoard[startX / 3][startY / 3] = symbolColumn;
 			}
+			//Check diagonals
+			boolean diagonal1Full = true;
+			boolean diagonal2Full = true;
+			CellState symbol1 = board[startX][startY], symbol2 = board[startX + 2][startY];
+			for(int i = 0; i < 3; i++)
+			{
+				diagonal1Full &= board[startX + i][startY + i] == symbol1;
+				diagonal2Full &= board[startX + (2 - i)][startY + i] == symbol2;
+			}
+			if(diagonal1Full && symbol1 != null) bigBoard[startX / 3][startY / 3] = symbol1;
+			if(diagonal2Full && symbol2 != null) bigBoard[startX / 3][startY / 3] = symbol2;
+
+			if(boardFull && bigBoard[startX / 3][startY / 3] == null) bigBoard[startX / 3][startY / 3] = CellState.TIE;
 		}
 	}
 	
 	private void calculateNextActiveField(int lastX, int lastY)
 	{
-		//TODO calculate next active Field
+		int x = lastX % 3, y = lastY % 3;
+		if(bigBoard[x][y] != null) activeX = activeY = 3;
+		else
+		{
+			activeX = x;
+			activeY = y;
+		}
 	}
 	
 	private boolean checkCoordinates(int x, int y)
@@ -56,20 +87,14 @@ public class PlayingBoard
 	public byte[] getBoardState()
 	{
 		byte[] ret = new byte[81];
-		for(int i = 0; i < 81; i++)
-		{
-			ret[i] = getByte(board[i % 9][i / 9]);
-		}
+		for(int i = 0; i < 81; i++) ret[i] = getByte(board[i % 9][i / 9]);
 		return ret;
 	}
 	
 	public byte[] getBigBoardState()
 	{
 		byte[] ret = new byte[9];
-		for(int i = 0; i < 9; i++)
-		{
-			ret[i] = getByte(bigBoard[i % 3][i / 3]);
-		}
+		for(int i = 0; i < 9; i++) ret[i] = getByte(bigBoard[i % 3][i / 3]);
 		return ret;
 	}
 	
@@ -93,7 +118,7 @@ public class PlayingBoard
 	
 	public static enum CellState
 	{
-		X, O;
+		X, O, TIE;
 	}
 	
 	public byte getByte(CellState s)
@@ -101,6 +126,7 @@ public class PlayingBoard
 		if(s == null) return 0;
 		if(s == CellState.X) return 1;
 		if(s == CellState.O) return 2;
+		if(s == CellState.TIE) return 3;
 		return 0;
 	}
 }
