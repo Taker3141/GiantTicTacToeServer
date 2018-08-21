@@ -56,6 +56,40 @@ public class PlayingBoard
 		}
 	}
 	
+	public CellState isWon()
+	{
+		boolean boardFull = true;
+		//Check rows and columns
+		for(int j = 0; j < 3; j++)
+		{
+			boolean rowFull = true;
+			boolean columnFull = true;
+			CellState symbolRow = bigBoard[0][j], symbolColumn = bigBoard[j][0];
+			for(int i = 0; i < 3; i++) 
+			{
+				rowFull &= bigBoard[i][j] == symbolRow;
+				columnFull &= bigBoard[j][i] == symbolColumn;
+				boardFull &= bigBoard[i][j] != null;
+			}
+			if(rowFull && symbolRow != null) return symbolRow;
+			if(columnFull && symbolColumn != null) return symbolColumn;
+		}
+		//Check diagonals
+		boolean diagonal1Full = true;
+		boolean diagonal2Full = true;
+		CellState symbol1 = bigBoard[0][0], symbol2 = bigBoard[0 + 2][0];
+		for(int i = 0; i < 3; i++)
+		{
+			diagonal1Full &= bigBoard[i][i] == symbol1;
+			diagonal2Full &= bigBoard[2 - i][i] == symbol2;
+		}
+		if(diagonal1Full && symbol1 != null) return symbol1;
+		if(diagonal2Full && symbol2 != null) return symbol2;
+
+		if(boardFull) return CellState.TIE;
+		return null;
+	}
+	
 	private void calculateNextActiveField(int lastX, int lastY)
 	{
 		int x = lastX % 3, y = lastY % 3;
@@ -76,12 +110,6 @@ public class PlayingBoard
 		int yMin = activeY * 3, yMax = activeY + 2;
 		if(xMin <= x && x <= xMax && yMin <= y && y <= yMax) return true;
 		else return false;
-	}
-	
-	public CellState isWon()
-	{
-		//TODO calculate if game is won
-		return null;
 	}
 	
 	public byte[] getBoardState()
