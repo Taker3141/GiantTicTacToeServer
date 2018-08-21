@@ -92,7 +92,7 @@ public class PlayingBoard
 	
 	private void calculateNextActiveField(int lastX, int lastY)
 	{
-		int x = lastX % 3, y = lastY % 3;
+		int x = lastX / 3, y = lastY / 3;
 		if(bigBoard[x][y] != null) activeX = activeY = 3;
 		else
 		{
@@ -104,10 +104,10 @@ public class PlayingBoard
 	private boolean checkCoordinates(int x, int y)
 	{
 		if(board[x][y] != null) return false;
-		if(x <= 9 || y <= 9) return false;
+		if(x > 9 || y > 9) return false;
 		if(activeX == 3 && activeY == 3) return true;
-		int xMin = activeX * 3, xMax = activeX + 2;
-		int yMin = activeY * 3, yMax = activeY + 2;
+		int xMin = activeX * 3, xMax = activeX * 3 + 2;
+		int yMin = activeY * 3, yMax = activeY * 3 + 2;
 		if(xMin <= x && x <= xMax && yMin <= y && y <= yMax) return true;
 		else return false;
 	}

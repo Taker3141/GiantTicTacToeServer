@@ -2,6 +2,7 @@ package computercamp.giantTicTacToe;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.Random;
 
 import computercamp.giantTicTacToe.PlayingBoard.CellState;
@@ -42,7 +43,7 @@ public class Main
 		finally {try{serverSocket.close();} catch(Exception e) {};}
 	}
 	
-	private static void moveRoutine(ClientInterface client)
+	private static void moveRoutine(ClientInterface client) throws SocketException
 	{
 		try
 		{
@@ -52,6 +53,11 @@ public class Main
 			client.sendMessage(message);
 			buffer = client.getMessage();
 			client.interpretMoveMessage(buffer, board);
+		}
+		catch(SocketException e)
+		{
+			System.out.println("Client " + client.clientID + " disconnected.");
+			throw e;
 		}
 		catch(Exception e)
 		{
