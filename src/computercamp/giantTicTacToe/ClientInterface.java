@@ -49,15 +49,15 @@ public class ClientInterface
 	
 	private void println(String message)
 	{
-		System.out.println("Thread " + clientID + ": " + message);
+		System.out.println("Client " + clientID + ": " + message);
 	}
 	
-	public static byte[] composeInfoMessage(PlayingBoard board, ClientInterface client)
+	public byte[] composeInfoMessage(PlayingBoard board)
 	{
 		byte[] message = new byte[99];
 		int i = 0;
 		message[i++] = 'I'; message[i++] = SEPARATOR;
-		message[i++] = (byte)client.clientID; message[i++] = SEPARATOR;
+		message[i++] = (byte)clientID; message[i++] = SEPARATOR;
 		
 		message = copyBytesToLocation(message, board.getBigBoardState(), i); i += 9; message[i++] = SEPARATOR;
 		message = copyBytesToLocation(message, board.getBoardState(), i); i += 81; message[i++] = SEPARATOR;
@@ -65,7 +65,7 @@ public class ClientInterface
 		return message;
 	}
 	
-	public static void interpretMoveMessage(byte[] message, PlayingBoard board, ClientInterface client)
+	public void interpretMoveMessage(byte[] message, PlayingBoard board)
 	{
 		int i = 0;
 		if(message[i++] != 'M') 
@@ -75,7 +75,7 @@ public class ClientInterface
 		}
 		i++;
 		int x = message[i++], y = message[i++];
-		board.setCell(x, y, client.symbol);
+		board.setCell(x, y, symbol);
 	}
 	
 	public static byte[] composeWinMessage(ClientInterface winner)
