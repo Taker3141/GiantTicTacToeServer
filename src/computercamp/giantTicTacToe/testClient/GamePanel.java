@@ -1,12 +1,7 @@
 package computercamp.giantTicTacToe.testClient;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Polygon;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.Arrays;
+import java.awt.*;
+import java.awt.event.*;
 
 import javax.swing.JPanel;
 

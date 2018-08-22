@@ -1,9 +1,6 @@
 package computercamp.giantTicTacToe.server;
 
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
-import java.util.Random;
+import java.net.*;
 
 import computercamp.giantTicTacToe.server.PlayingBoard.CellState;
 
@@ -71,20 +68,5 @@ public class Main
 			e.printStackTrace();
 		}
 		return ret;
-	}
-	
-	private static PlayingBoard generateRandomTestingField()
-	{
-		PlayingBoard field = new PlayingBoard();
-		Random rand = new Random();
-		
-		for(int i = 0; i < 9; i++) for(int j = 0; j < 9; j++) switch(rand.nextInt() % 3)
-		{
-			case 0: field.setCell(i, j, null); break;
-			case 1: field.setCell(i, j, CellState.X); break;
-			case 2: field.setCell(i, j, CellState.O); break;
-		}
-		
-		return field;
 	}
 }
