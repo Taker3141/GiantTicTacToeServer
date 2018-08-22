@@ -17,6 +17,7 @@ public class Main
 	public static int activeX = 3, activeY = 3;
 	public static CellState symbol = null;
 	public static boolean initialized = false;
+	public static boolean done = false;
 	
 	public static JFrame frame;
 	
@@ -42,8 +43,8 @@ public class Main
 		}
 		catch(SocketException e1)
 		{
-			//throw e1;
-			e1.printStackTrace();
+			if(done) System.out.println("Game finished. Server closed.");
+			else e1.printStackTrace();
 		}
 		catch(Exception e)
 		{

@@ -89,6 +89,7 @@ public class ServerInterface
 		String text;
 		if(message[2] == 3) text = "Game finished. Tie.";
 		else text = "Game finished. Client " + message[2] + " won.";
+		Main.done = true;
 		JOptionPane.showMessageDialog(null, text, "Done", JOptionPane.OK_OPTION);
 	}
 	

@@ -2,6 +2,8 @@ package computercamp.giantTicTacToe.server;
 
 import java.net.*;
 
+import javax.swing.JFrame;
+
 import computercamp.giantTicTacToe.server.PlayingBoard.CellState;
 
 public class Main
@@ -10,11 +12,17 @@ public class Main
 	
 	public static PlayingBoard board = new PlayingBoard();
 	public static CellState winner = null;
+	public static JFrame frame;
 	
 	public static final int PORT = 3141;
 	
 	public static void main(String[] args)
 	{
+		frame = new JFrame("Ultimate Tic Tac Toe Server");
+		frame.setSize(900, 1000);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+		
 		ServerSocket serverSocket = null;
 		try
 		{
@@ -33,7 +41,10 @@ public class Main
 				while(!moveRoutine(clients[1]));
 				if(winner != null) break;
 			}
-			clients[0].sendMessage(ClientInterface.composeWinMessage(winner));
+			byte[] winMessage = ClientInterface.composeWinMessage(winner);
+			clients[0].sendMessage(winMessage);
+			clients[1].sendMessage(winMessage);
+			System.out.println("Game finished. Closing server.");
 		} 
 		catch (Exception e)
 		{
