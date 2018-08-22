@@ -12,6 +12,7 @@ import java.util.*;
 import javax.swing.JFrame;
 
 import computercamp.giantTicTacToe.server.PlayingBoard.CellState;
+import computercamp.giantTicTacToe.util.ErrorCode;
 
 public class Main
 {
@@ -70,11 +71,22 @@ public class Main
 			System.out.println("Client 1 accepted");
 			logger = new PrintWriter(new FileOutputStream(logFile));
 			updateGameDisplay();
+			ErrorCode status = ErrorCode.NO_ERROR;
 			while(true)
 			{
-				while(!moveRoutine(clients[0]));
+				while(true)
+				{
+					status = moveRoutine(clients[0]);
+					if(status == ErrorCode.NO_ERROR) break;
+					else clients[0].sendMessage(clients[0].composeErrorMessage(status));					
+				}
 				if(winner != null) break;
-				while(!moveRoutine(clients[1]));
+				while(true)
+				{
+					status = moveRoutine(clients[1]);
+					if(status == ErrorCode.NO_ERROR) break;
+					else clients[1].sendMessage(clients[1].composeErrorMessage(status));
+				}
 				if(winner != null) break;
 			}
 			byte[] winMessage = ClientInterface.composeWinMessage(winner);
@@ -107,9 +119,9 @@ public class Main
 		finally {try{logger.flush(); logger.close(); serverSocket.close();} catch(Exception e) {};}
 	}
 	
-	private static boolean moveRoutine(ClientInterface client) throws SocketException
+	private static ErrorCode moveRoutine(ClientInterface client) throws SocketException
 	{
-		boolean ret = false;
+		ErrorCode ret = ErrorCode.UNKNOWN_ERROR;
 		try
 		{
 			byte[] message;
@@ -120,7 +132,7 @@ public class Main
 			client.sendMessage(message);
 			buffer = client.getMessage();
 			ret = client.interpretMoveMessage(buffer, board);
-			if(ret) updateGameDisplay();
+			if(ret == ErrorCode.NO_ERROR) updateGameDisplay();
 			System.out.println("Client " + client.clientID + " made a move");
 		}
 		catch(SocketException e)

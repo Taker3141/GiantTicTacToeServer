@@ -5,6 +5,7 @@ import java.net.Socket;
 import java.net.SocketException;
 
 import computercamp.giantTicTacToe.server.PlayingBoard.CellState;
+import computercamp.giantTicTacToe.util.ErrorCode;
 
 public class ClientInterface
 {
@@ -65,19 +66,20 @@ public class ClientInterface
 		return message;
 	}
 	
-	public boolean interpretMoveMessage(byte[] message, PlayingBoard board)
+	public ErrorCode interpretMoveMessage(byte[] message, PlayingBoard board)
 	{
 		int i = 0;
 		if(message[i++] != 'M') 
 		{
 			System.out.println("This is not a move message!");
-			return false;
+			return ErrorCode.INVALID_MESSAGE_ID;
 		}
 		i++;
 		int x = message[i++], y = message[i++];
-		if(!board.setCell(x, y, symbol)) return false;
+		ErrorCode status = board.setCell(x, y, symbol);
+		if(status != ErrorCode.NO_ERROR) return status;
 		Main.winner = board.isWon();
-		return true;
+		return status;
 	}
 	
 	public static byte[] composeWinMessage(CellState winner)
@@ -95,5 +97,15 @@ public class ClientInterface
 		byte[] ret = dest;
 		for(int i = 0; i < src.length; i++) ret[loc + i] = src[i];
 		return ret;
+	}
+
+	public byte[] composeErrorMessage(ErrorCode error)
+	{
+		byte[] message = new byte[4];
+		int i = 0;
+		message[i++] = 'E'; message[i++] = SEPARATOR;
+		byte errorID = (byte)error.ordinal();
+		message[i++] = errorID; message[i++] = SEPARATOR;
+		return message;
 	}
 }

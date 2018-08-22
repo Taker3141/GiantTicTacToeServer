@@ -1,26 +1,26 @@
 package computercamp.giantTicTacToe.server;
 
+import static computercamp.giantTicTacToe.util.ErrorCode.*;
+
+import computercamp.giantTicTacToe.util.ErrorCode;
+
 public class PlayingBoard
 {
 	CellState[][] board = new CellState[9][9];
 	CellState[][] bigBoard = new CellState[3][3];
 	int activeX = 3, activeY = 3;
 	
-	public boolean setCell(int x, int y, CellState s)
+	public ErrorCode setCell(int x, int y, CellState s)
 	{
-		if(checkCoordinates(x, y))
+		ErrorCode status = checkCoordinates(x, y);
+		if(status == NO_ERROR)
 		{
 			board[x][y] = s;
 			calculateBigBoardState();
 			calculateNextActiveField(x, y);
-			return true;
 		}
-		else
-		{
-			//TODO error handling
-			System.out.println("Invalid move");
-			return false;
-		}
+		else System.out.println("Invalid move");
+		return status;
 	}
 	
 	private void calculateBigBoardState()
@@ -104,16 +104,16 @@ public class PlayingBoard
 		}
 	}
 	
-	private boolean checkCoordinates(int x, int y)
+	private ErrorCode checkCoordinates(int x, int y)
 	{
-		if(board[x][y] != null) return false;
-		if(bigBoard[x / 3][y / 3] != null) return false;
-		if(x > 9 || y > 9) return false;
-		if(activeX == 3 && activeY == 3) return true;
+		if(board[x][y] != null) return CELL_OCCUPIED;
+		if(bigBoard[x / 3][y / 3] != null) return FIELD_DECIDED;
+		if(x < 0 || x > 9 || y < 0 || y > 9) return OUT_OF_BOUNDS;
+		if(activeX == 3 && activeY == 3) return NO_ERROR;
 		int xMin = activeX * 3, xMax = activeX * 3 + 2;
 		int yMin = activeY * 3, yMax = activeY * 3 + 2;
-		if(xMin <= x && x <= xMax && yMin <= y && y <= yMax) return true;
-		else return false;
+		if(xMin <= x && x <= xMax && yMin <= y && y <= yMax) return NO_ERROR;
+		else return FIELD_INACTIVE;
 	}
 	
 	public GameState getGameStateObject()

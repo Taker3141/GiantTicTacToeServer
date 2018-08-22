@@ -9,6 +9,7 @@ import java.net.Socket;
 import javax.swing.JOptionPane;
 
 import computercamp.giantTicTacToe.server.PlayingBoard.CellState;
+import computercamp.giantTicTacToe.util.ErrorCode;
 
 public class ServerInterface
 {
@@ -95,6 +96,6 @@ public class ServerInterface
 	
 	private void handleError(byte[] message)
 	{
-		//TODO exception handling
+		System.out.println("An error occurred: " + ErrorCode.values()[message[2]].toString());
 	}
 }
