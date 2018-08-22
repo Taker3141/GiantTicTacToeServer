@@ -5,6 +5,7 @@ import java.awt.event.*;
 
 import javax.swing.JPanel;
 
+import computercamp.giantTicTacToe.server.PlayingBoard.CellState;
 import computercamp.giantTicTacToe.util.Renderer;
 
 @SuppressWarnings("serial")
@@ -22,7 +23,8 @@ public class GamePanel extends JPanel implements MouseListener
 	{
 		Ux = g.getClipBounds().width / 9; Uy = g.getClipBounds().height / 9;
 		if(Main.symbol == null) Main.frame.setTitle("Ultimate Tic Tac Toe Client: Waiting for game to start");
-		//TODO
+		else if(Main.symbol == CellState.X) Main.frame.setTitle("Ultimate Tic Tac Toe Client: Client 1 (X)");
+		else if(Main.symbol == CellState.O) Main.frame.setTitle("Ultimate Tic Tac Toe Client: Client 2 (O)");
 		if(Main.initialized) Renderer.renderPlayingBoard(g, Main.bigBoard, Main.board, Main.activeX, Main.activeY, Main.myTurn);
 	}
 

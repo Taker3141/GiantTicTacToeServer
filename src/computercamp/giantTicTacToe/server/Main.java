@@ -2,6 +2,10 @@ package computercamp.giantTicTacToe.server;
 
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.net.*;
 import java.util.*;
 
@@ -20,6 +24,8 @@ public class Main
 	public static InfoPanel infoPanel;
 	public static List<GameState> gameStates = new ArrayList<GameState>();
 	public static int currentState = 0;
+	public static File logFile = new File("log.txt");
+	public static PrintWriter logger;
 	
 	public static final int PORT = 3141;
 	
@@ -39,9 +45,9 @@ public class Main
 			public void componentResized(ComponentEvent e)
 			{
 				gamePanel.setLocation(0, 0);
-				gamePanel.setSize(frame.getWidth(), 9 * frame.getHeight() / 10);
-				infoPanel.setLocation(0, 9 * frame.getHeight() / 10);
-				infoPanel.setSize(frame.getWidth(), frame.getHeight() / 10);
+				gamePanel.setSize(frame.getWidth(), frame.getHeight() - 100);
+				infoPanel.setLocation(0, frame.getHeight() - 100);
+				infoPanel.setSize(frame.getWidth(), 100);
 			}
 			
 			@Override public void componentHidden(ComponentEvent arg0) {}
@@ -62,6 +68,7 @@ public class Main
 			clientSocket = serverSocket.accept();
 			clients[1] = new ClientInterface(clientSocket);
 			System.out.println("Client 1 accepted");
+			logger = new PrintWriter(new FileOutputStream(logFile));
 			updateGameDisplay();
 			while(true)
 			{
@@ -71,19 +78,33 @@ public class Main
 				if(winner != null) break;
 			}
 			byte[] winMessage = ClientInterface.composeWinMessage(winner);
-			if(winner == CellState.TIE) infoPanel.setStateMessage("Game finished. It's a tie.");
-			else if(winner == CellState.X) infoPanel.setStateMessage("Game finished. Client 1 (X) won.");
-			else if(winner == CellState.O) infoPanel.setStateMessage("Game finished. Client 2 (O) won.");
+			String messageToDisplay = "";
+			if(winner == CellState.TIE) messageToDisplay = "Game finished. It's a tie.";
+			else if(winner == CellState.X) messageToDisplay = "Game finished. Client 1 (X) won.";
+			else if(winner == CellState.O) messageToDisplay = "Game finished. Client 2 (O) won.";
 			clients[0].sendMessage(winMessage);
 			clients[1].sendMessage(winMessage);
-			System.out.println("Game finished. Closing server.");
+			infoPanel.setStateMessage(messageToDisplay);
+			logger.println(messageToDisplay);
+			logger.close();
+			System.out.println(messageToDisplay);
+			System.out.println("Sending log to clients.");
+			{
+				FileInputStream fileInput = new FileInputStream(logFile);
+				byte[] fileBuffer = new byte[fileInput.available()];
+				fileInput.read(fileBuffer);
+				fileInput.close();
+				clients[0].sendMessage(fileBuffer);
+				clients[1].sendMessage(fileBuffer);
+			}
+			System.out.println("Closing server.");
 		} 
 		catch (Exception e)
 		{
 			System.out.println("Server Crashed");
 			e.printStackTrace();
 		}
-		finally {try{serverSocket.close();} catch(Exception e) {};}
+		finally {try{logger.flush(); logger.close(); serverSocket.close();} catch(Exception e) {};}
 	}
 	
 	private static boolean moveRoutine(ClientInterface client) throws SocketException
@@ -120,6 +141,9 @@ public class Main
 		if(currentState == gameStates.size() - 1) currentState++;
 		gameStates.add(board.getGameStateObject());
 		gamePanel.state = gameStates.get(currentState);
+		logger.println("Move #" + (gameStates.size() - 1) + ":");
+		logger.print(board);
+		logger.println();
 		infoPanel.update();
 		frame.repaint();
 	}

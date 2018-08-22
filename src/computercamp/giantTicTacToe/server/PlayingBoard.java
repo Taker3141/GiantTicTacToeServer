@@ -146,14 +146,27 @@ public class PlayingBoard
 		for(int i = 0; i < 9 * 9; i++)
 		{
 			CellState s = board[i % 9][i / 9];
-			ret += s == null ? " " : s;
+			ret += s == null ? " " : (s == CellState.TIE ? "-" : s);
 			if(i % 9 == 2 || i % 9 == 5) ret += "|";
 			if(i % 9 == 8) 
 			{
-				ret += "\n";
-				if(i / 9 == 2 || i / 9 == 5) ret += "---+---+---\n";
+				ret += "\r\n";
+				if(i / 9 == 2 || i / 9 == 5) ret += "---+---+---\r\n";
 			}
 		}
+		ret += "\r\n";
+		for(int i = 0; i < 9; i++)
+		{
+			CellState s = bigBoard[i % 3][i / 3];
+			ret += s == null ? " " : s;
+			if(i % 3 != 2) ret += "|";
+			else if(i != 8)
+			{
+				ret += "\r\n";
+				ret += "-+-+-\r\n";
+			}
+		}
+		ret += "\r\n";
 		return ret;
 	}
 	
