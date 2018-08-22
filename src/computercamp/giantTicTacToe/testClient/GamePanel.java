@@ -21,6 +21,8 @@ public class GamePanel extends JPanel implements MouseListener
 	public void paint(Graphics g)
 	{
 		Ux = g.getClipBounds().width / 9; Uy = g.getClipBounds().height / 9;
+		if(Main.symbol == null) Main.frame.setTitle("Ultimate Tic Tac Toe Client: Waiting for game to start");
+		//TODO
 		if(Main.initialized) Renderer.renderPlayingBoard(g, Main.bigBoard, Main.board, Main.activeX, Main.activeY, Main.myTurn);
 	}
 

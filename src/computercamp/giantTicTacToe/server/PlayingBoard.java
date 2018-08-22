@@ -2,8 +2,8 @@ package computercamp.giantTicTacToe.server;
 
 public class PlayingBoard
 {
-	private CellState[][] board = new CellState[9][9];
-	private CellState[][] bigBoard = new CellState[3][3];
+	CellState[][] board = new CellState[9][9];
+	CellState[][] bigBoard = new CellState[3][3];
 	int activeX = 3, activeY = 3;
 	
 	public boolean setCell(int x, int y, CellState s)
@@ -114,6 +114,15 @@ public class PlayingBoard
 		int yMin = activeY * 3, yMax = activeY * 3 + 2;
 		if(xMin <= x && x <= xMax && yMin <= y && y <= yMax) return true;
 		else return false;
+	}
+	
+	public GameState getGameStateObject()
+	{
+		CellState[][] boardCopy = new CellState[9][9];
+		CellState[][] bigBoardCopy = new CellState[3][3];
+		for(int i = 0; i < 9; i++) for(int j = 0; j < 9; j++) boardCopy[i][j] = board[i][j];
+		for(int i = 0; i < 3; i++) for(int j = 0; j < 3; j++) bigBoardCopy[i][j] = bigBoard[i][j];
+		return new GameState(boardCopy, bigBoardCopy, activeX, activeY);
 	}
 	
 	public byte[] getBoardState()
