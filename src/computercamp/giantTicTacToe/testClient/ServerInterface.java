@@ -45,7 +45,7 @@ public class ServerInterface
 	
 	private void interpretInfoMessage(byte[] message)
 	{
-		Main.myTurn = true;
+		Main.myTurn = true; Main.initialized = true;
 		if(message[2] == 0) Main.symbol = CellState.X;
 		else Main.symbol = CellState.O;
 		for(int i = 0; i < 9; i++)

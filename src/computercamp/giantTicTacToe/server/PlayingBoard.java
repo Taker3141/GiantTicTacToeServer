@@ -107,6 +107,7 @@ public class PlayingBoard
 	private boolean checkCoordinates(int x, int y)
 	{
 		if(board[x][y] != null) return false;
+		if(bigBoard[x / 3][y / 3] != null) return false;
 		if(x > 9 || y > 9) return false;
 		if(activeX == 3 && activeY == 3) return true;
 		int xMin = activeX * 3, xMax = activeX * 3 + 2;

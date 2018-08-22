@@ -16,6 +16,7 @@ public class Main
 	public static boolean myTurn = false;
 	public static int activeX = 3, activeY = 3;
 	public static CellState symbol = null;
+	public static boolean initialized = false;
 	
 	public static JFrame frame;
 	
