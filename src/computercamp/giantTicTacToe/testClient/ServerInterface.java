@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import javax.swing.JOptionPane;
+
 import computercamp.giantTicTacToe.server.PlayingBoard.CellState;
 
 public class ServerInterface
@@ -84,7 +86,10 @@ public class ServerInterface
 	
 	private void interpretWinMessage(byte[] message)
 	{
-		//TODO handle end of game
+		String text;
+		if(message[2] == 3) text = "Game finished. Tie.";
+		else text = "Game finished. Client " + message[2] + " won.";
+		JOptionPane.showMessageDialog(null, text, "Done", JOptionPane.OK_OPTION);
 	}
 	
 	private void handleError(byte[] message)

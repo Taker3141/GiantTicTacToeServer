@@ -75,15 +75,18 @@ public class ClientInterface
 		}
 		i++;
 		int x = message[i++], y = message[i++];
-		return board.setCell(x, y, symbol);
+		if(!board.setCell(x, y, symbol)) return false;
+		Main.winner = board.isWon();
+		return true;
 	}
 	
-	public static byte[] composeWinMessage(ClientInterface winner)
+	public static byte[] composeWinMessage(CellState winner)
 	{
 		byte[] message = new byte[4];
 		int i = 0;
 		message[i++] = 'W'; message[i++] = SEPARATOR;
-		message[i++] = (byte)winner.clientID; message[i++] = SEPARATOR;
+		byte winnerId = Main.board.getByte(winner);
+		message[i++] = winnerId; message[i++] = SEPARATOR;
 		return message;
 	}
 	

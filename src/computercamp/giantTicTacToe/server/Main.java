@@ -12,6 +12,7 @@ public class Main
 	private static ClientInterface[] clients = new ClientInterface[2];
 	
 	public static PlayingBoard board = new PlayingBoard();
+	public static CellState winner = null;
 	
 	public static final int PORT = 3141;
 	
@@ -31,8 +32,11 @@ public class Main
 			while(true)
 			{
 				while(!moveRoutine(clients[0]));
+				if(winner != null) break;
 				while(!moveRoutine(clients[1]));
+				if(winner != null) break;
 			}
+			clients[0].sendMessage(ClientInterface.composeWinMessage(winner));
 		} 
 		catch (Exception e)
 		{
