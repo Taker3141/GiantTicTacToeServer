@@ -1,40 +1,34 @@
-package computercamp.giantTicTacToe.testClient;
+package computercamp.giantTicTacToe.garbageAI;
 
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 
-import javax.swing.JFrame;
-
-import computercamp.giantTicTacToe.server.PlayingBoard.CellState;
+import computercamp.giantTicTacToe.testClient.ServerInterface;
 import computercamp.giantTicTacToe.util.ActiveState;
 
 public class Main
 {
 	public static ServerInterface server;
+	public static GarbageAI ai;
 	public static ActiveState state = new ActiveState();
-	public static JFrame frame;
 	
 	public static final int PORT = 3141;
 	
 	public static void main(String[] args)
 	{
-		System.out.println("Testing Client running");
+		System.out.println("Garbage AI (GAI) running");
 		
-		frame = new JFrame();
-		frame.setSize(900, 900);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.add(new GamePanel());
-		frame.setVisible(true);
-			
 		try
 		{
 			server = new ServerInterface(new Socket(InetAddress.getLocalHost(), PORT));
+			ai = new GarbageAI();
 			
 			while(true) 
 			{
 				server.waitForMessage(state);
-				Main.frame.repaint();
+				int[] move = ai.calculateBestMove(state);
+				server.sendMoveMessage(move[0], move[1]);
 			}
 		}
 		catch(SocketException e1)

@@ -22,22 +22,22 @@ public class GamePanel extends JPanel implements MouseListener
 	public void paint(Graphics g)
 	{
 		Ux = g.getClipBounds().width / 9; Uy = g.getClipBounds().height / 9;
-		if(Main.symbol == null) Main.frame.setTitle("Ultimate Tic Tac Toe Client: Waiting for game to start");
-		else if(Main.symbol == CellState.X) Main.frame.setTitle("Ultimate Tic Tac Toe Client: Client 1 (X)");
-		else if(Main.symbol == CellState.O) Main.frame.setTitle("Ultimate Tic Tac Toe Client: Client 2 (O)");
-		if(Main.initialized) Renderer.renderPlayingBoard(g, Main.bigBoard, Main.board, Main.activeX, Main.activeY, Main.myTurn);
+		if(Main.state.symbol == null) Main.frame.setTitle("Ultimate Tic Tac Toe Client: Waiting for game to start");
+		else if(Main.state.symbol == CellState.X) Main.frame.setTitle("Ultimate Tic Tac Toe Client: Client 1 (X)");
+		else if(Main.state.symbol == CellState.O) Main.frame.setTitle("Ultimate Tic Tac Toe Client: Client 2 (O)");
+		if(Main.state.initialized) Renderer.renderPlayingBoard(g, Main.state.bigBoard, Main.state.board, Main.state.activeX, Main.state.activeY, Main.state.myTurn);
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e)
 	{
 		int cellX = e.getX() / Ux, cellY = e.getY() / Uy;
-		if(Main.myTurn)
+		if(Main.state.myTurn)
 		{
-			Main.board[cellX][cellY] = Main.symbol;
+			Main.state.board[cellX][cellY] = Main.state.symbol;
 			Main.frame.repaint();
 			Main.server.sendMoveMessage(cellX, cellY);
-			Main.myTurn = false;
+			Main.state.myTurn = false;
 		}
 	}
 

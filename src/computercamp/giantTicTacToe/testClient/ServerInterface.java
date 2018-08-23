@@ -9,6 +9,7 @@ import java.net.Socket;
 import javax.swing.JOptionPane;
 
 import computercamp.giantTicTacToe.server.PlayingBoard.CellState;
+import computercamp.giantTicTacToe.util.ActiveState;
 import computercamp.giantTicTacToe.util.ErrorCode;
 
 public class ServerInterface
@@ -33,32 +34,32 @@ public class ServerInterface
 		}
 	}
 	
-	public void waitForMessage() throws IOException
+	public void waitForMessage(ActiveState state) throws IOException
 	{
 		char[] buffer = new char[1204];
 		in.read(buffer);
 		byte[] message = new String(buffer).getBytes();
 		switch(buffer[0])
 		{
-			case 'I': interpretInfoMessage(message); break;
-			case 'W': interpretWinMessage(message); break;
+			case 'I': interpretInfoMessage(message, state); break;
+			case 'W': interpretWinMessage(message, state); break;
 			case 'E': handleError(message); break;
 		}
 	}
 	
-	private void interpretInfoMessage(byte[] message)
+	private void interpretInfoMessage(byte[] message, ActiveState state)
 	{
-		Main.myTurn = true; Main.initialized = true;
-		if(message[2] == 0) Main.symbol = CellState.X;
-		else Main.symbol = CellState.O;
+		state.myTurn = true; state.initialized = true;
+		if(message[2] == 0) state.symbol = CellState.X;
+		else state.symbol = CellState.O;
 		for(int i = 0; i < 9; i++)
 		{
 			switch(message[4 + i])
 			{
-				case 1: Main.bigBoard[i % 3][i / 3] = CellState.X; break;
-				case 2: Main.bigBoard[i % 3][i / 3] = CellState.O; break;
-				case 3: Main.bigBoard[i % 3][i / 3] = CellState.TIE; break;
-				default: Main.bigBoard[i % 3][i / 3] = null; break;
+				case 1: state.bigBoard[i % 3][i / 3] = CellState.X; break;
+				case 2: state.bigBoard[i % 3][i / 3] = CellState.O; break;
+				case 3: state.bigBoard[i % 3][i / 3] = CellState.TIE; break;
+				default: state.bigBoard[i % 3][i / 3] = null; break;
 			}
 		}
 		
@@ -66,13 +67,12 @@ public class ServerInterface
 		{
 			switch(message[14 + i])
 			{
-				case 1: Main.board[i % 9][i / 9] = CellState.X; break;
-				case 2: Main.board[i % 9][i / 9] = CellState.O; break;
-				default: Main.board[i % 9][i / 9] = null; break;
+				case 1: state.board[i % 9][i / 9] = CellState.X; break;
+				case 2: state.board[i % 9][i / 9] = CellState.O; break;
+				default: state.board[i % 9][i / 9] = null; break;
 			}
 		}
-		Main.activeX = (int)message[96]; Main.activeY = (int)message[97];
-		Main.frame.repaint();
+		state.activeX = (int)message[96]; state.activeY = (int)message[97];
 	}
 	
 	public void sendMoveMessage(int x, int y)
@@ -85,12 +85,12 @@ public class ServerInterface
 		out.flush();
 	}
 	
-	private void interpretWinMessage(byte[] message)
+	private void interpretWinMessage(byte[] message, ActiveState state)
 	{
 		String text;
 		if(message[2] == 3) text = "Game finished. Tie.";
 		else text = "Game finished. Client " + message[2] + " won.";
-		Main.done = true;
+		state.done = true;
 		JOptionPane.showMessageDialog(null, text, "Done", JOptionPane.OK_OPTION);
 	}
 	
