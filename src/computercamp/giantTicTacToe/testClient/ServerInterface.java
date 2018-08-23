@@ -50,8 +50,8 @@ public class ServerInterface
 	private void interpretInfoMessage(byte[] message, ActiveState state)
 	{
 		state.myTurn = true; state.initialized = true;
-		if(message[2] == 0) state.symbol = CellState.X;
-		else state.symbol = CellState.O;
+		if(message[2] == 0) {ActiveState.ownSymbol = CellState.X; state.symbol = CellState.X;}
+		else {ActiveState.ownSymbol = CellState.O;  state.symbol = CellState.O;}
 		for(int i = 0; i < 9; i++)
 		{
 			switch(message[4 + i])

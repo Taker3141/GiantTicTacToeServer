@@ -2,6 +2,7 @@ package computercamp.giantTicTacToe.garbageAI;
 
 import java.util.*;
 
+import computercamp.giantTicTacToe.server.PlayingBoard.CellState;
 import computercamp.giantTicTacToe.util.ActiveState;
 
 public class GarbageAI
@@ -10,27 +11,27 @@ public class GarbageAI
 	
 	public int[] calculateBestMove(ActiveState state)
 	{
-		List<Move> possibleMoves = new ArrayList<Move>();
-		for(int x = 0; x < 9; x++) for(int y = 0; y < 9; y++)
-		{
-			if(state.board[x][y] != null) continue;
-			if(state.bigBoard[x / 3][y / 3] != null) continue;
-			if(x < 0 || x > 9 || y < 0 || y > 9) continue;
-			if(state.activeX == 3 && state.activeY == 3) 
-			{
-				possibleMoves.add(new Move(x, y, null));
-				continue;
-			}
-			int xMin = state.activeX * 3, xMax = state.activeX * 3 + 2;
-			int yMin = state.activeY * 3, yMax = state.activeY * 3 + 2;
-			if(xMin <= x && x <= xMax && yMin <= y && y <= yMax) 
-			{
-				possibleMoves.add(new Move(x, y, null));
-			}
-		}
-		int index = random.nextInt(possibleMoves.size());
-		Move move = possibleMoves.get(index);
+		Move move = getMoveRecursively(state, 5, 5);
 
 		return new int[]{move.x, move.y};
+	}
+	
+	private Move getMoveRecursively(ActiveState state, int depth, int maxDepth)
+	{
+		List<Move> possibleMoves = state.getPossibleMoves();
+		for(Move m : possibleMoves)
+		{
+			ActiveState newState = state.applyMove(m);
+			if(depth == 0) m.value = newState.getValue();
+			else m.value = getMoveRecursively(newState, depth - 1, maxDepth).value;
+			if(m.value > 10) break;
+		}
+		Collections.sort(possibleMoves);
+		int i = 0;
+		if(maxDepth == depth) for(i = 0; i < possibleMoves.size(); i++)
+		{
+			if(possibleMoves.get(i) != possibleMoves.get(0)) break;
+		}
+		return possibleMoves.get(random.nextInt(i + 1));
 	}
 }
