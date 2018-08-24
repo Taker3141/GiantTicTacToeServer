@@ -106,9 +106,10 @@ public class PlayingBoard
 	
 	private ErrorCode checkCoordinates(int x, int y)
 	{
+		System.out.println("Try to set at " + x + ", " + y);
+		if(x < 0 || x > 9 || y < 0 || y > 9) return OUT_OF_BOUNDS;
 		if(board[x][y] != null) return CELL_OCCUPIED;
 		if(bigBoard[x / 3][y / 3] != null) return FIELD_DECIDED;
-		if(x < 0 || x > 9 || y < 0 || y > 9) return OUT_OF_BOUNDS;
 		if(activeX == 3 && activeY == 3) return NO_ERROR;
 		int xMin = activeX * 3, xMax = activeX * 3 + 2;
 		int yMin = activeY * 3, yMax = activeY * 3 + 2;

@@ -78,10 +78,11 @@ public class ServerInterface
 	public void sendMoveMessage(int x, int y)
 	{
 		byte[] message = new byte[6];
-		message[0] = 'M'; message[1] = -1;
+		message[0] = 'M'; message[1] = 'A';
 		message[2] = (byte)x; message[3] = (byte)y;
-		message[4] = '\r'; message[4] = '\n';
-		out.write(new String(message).toCharArray());
+		message[4] = '\r'; message[5] = '\n';
+		char[] chars = new String(message).toCharArray();
+		out.write(chars);
 		out.flush();
 	}
 	

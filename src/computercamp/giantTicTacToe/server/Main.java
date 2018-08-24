@@ -33,7 +33,7 @@ public class Main
 	public static void main(String[] args)
 	{
 		frame = new JFrame("Ultimate Tic Tac Toe Server");
-		frame.setSize(900, 1000);
+		frame.setSize(450, 550);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(null);
 		gamePanel = new ServerGamePanel();

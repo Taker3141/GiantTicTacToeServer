@@ -16,7 +16,7 @@ public class ClientInterface
 	private PrintWriter out;
 	
 	public static int clientCounter = 0;
-	public static final byte SEPARATOR = -1;
+	public static final byte SEPARATOR = 'A';
 	
 	public ClientInterface(Socket clientSocket)
 	{

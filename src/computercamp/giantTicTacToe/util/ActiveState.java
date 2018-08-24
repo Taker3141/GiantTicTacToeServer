@@ -141,13 +141,43 @@ public class ActiveState
 		{
 			if(bigBoard[i][j] != null) switch(bigBoard[i][j])
 			{
-				case X: value++; break;
-				case O: value--; break;
+				case X: value += 10; break;
+				case O: value -= 10; break;
 				default:
 			}
 		}
+		for(int startX = 0; startX < 9; startX += 3) for(int startY = 0; startY < 9; startY += 3)
+		{
+			for(int j = 0; j < 3; j++)
+			{
+				int row = 0;
+				int column = 0;
+				for(int i = 0; i < 3; i++) 
+				{
+					row += symbolValue(board[startX + i][startY + j]);
+					column += symbolValue(board[startX + j][startY + i]);
+				}
+				if(row == 2) value++; if(row == -2) value--;
+				if(column == 2) value++; if(column == -2) value--;
+			}
+			//Check diagonals
+			int diagonal1 = 0;
+			int diagonal2 = 0;
+			for(int i = 0; i < 3; i++)
+			{
+				diagonal1 += symbolValue(board[startX + i][startY + i]);
+				diagonal2 += symbolValue(board[startX + (2 - i)][startY + i]);
+			}
+			if(diagonal1 == 2) value++; if(diagonal1 == -2) value--;
+			if(diagonal2 == 2) value++; if(diagonal2 == -2) value--;
+		}
 		CellState winner = isWon();
-		if(winner != null) return 100 * (winner == ownSymbol ? -1 : 1);
-		return value * (symbol == ownSymbol ? -1 : 1);
+		if(winner == CellState.X) value += 100; if(winner == CellState.O) value -= 100;
+		return value;
+	}
+	
+	private int symbolValue(CellState symbol)
+	{
+		return symbol == CellState.X ? 1 : -1;
 	}
 }

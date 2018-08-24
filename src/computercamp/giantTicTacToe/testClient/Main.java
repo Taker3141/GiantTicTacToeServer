@@ -6,7 +6,6 @@ import java.net.SocketException;
 
 import javax.swing.JFrame;
 
-import computercamp.giantTicTacToe.server.PlayingBoard.CellState;
 import computercamp.giantTicTacToe.util.ActiveState;
 
 public class Main
