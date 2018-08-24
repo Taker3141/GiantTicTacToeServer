@@ -178,6 +178,8 @@ public class ActiveState
 	
 	private int symbolValue(CellState symbol)
 	{
-		return symbol == CellState.X ? 1 : -1;
+		if(symbol == CellState.X) return 1;
+		if(symbol == CellState.O) return -1; 
+		return 0;
 	}
 }

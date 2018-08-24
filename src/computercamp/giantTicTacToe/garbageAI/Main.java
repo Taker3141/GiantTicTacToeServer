@@ -21,7 +21,7 @@ public class Main
 		
 		try
 		{
-			server = new ServerInterface(new Socket(InetAddress.getLocalHost(), PORT));
+			server = new ServerInterface(new Socket(InetAddress.getByAddress(new byte[] {127, 0, 0, 1}), PORT));
 			ai = new GarbageAI();
 			
 			while(true) 
